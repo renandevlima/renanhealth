@@ -4,7 +4,6 @@ const styles = StyleSheet.create({
     formContext: {
         width: "100%",
         height: "100%",
-        justifyContent: "space-around",
         bottom: 0,
         backgroundColor: "#ffffff",
         alignItems: "center",
@@ -17,7 +16,7 @@ const styles = StyleSheet.create({
     form: {
         width: "100%",
         height: "auto",
-        marginTop: 30,
+        marginTop: 20,
         padding: 10
     },
 
@@ -58,6 +57,27 @@ const styles = StyleSheet.create({
         color: "red",
         fontWeight: "bold",
         paddingLeft: 20
+    },
+
+    exhibitionResultImc: {
+        width: "100%",
+        height: "50%"
+    },
+
+    listImcs: {
+        marginTop: 20
+    },
+
+    resultImcItem:{
+        fontSize: 26,
+        color: "red",
+        height: 50,
+        width: "100%",
+        paddingRight: 20
+    },
+
+    textResultItemList : {
+        fontSize: 16
     }
 
 });

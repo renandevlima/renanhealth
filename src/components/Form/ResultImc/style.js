@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         paddingTop: 15,
         alignItems: "center",
+        marginTop: 30,
         width: "100%"
     },
 
@@ -24,7 +25,8 @@ const styles = StyleSheet.create({
     boxShareButton: {
         width: "100%",
         alignItems: "center",
-        marginBottom: 10
+        marginBottom: 10,
+        marginTop: 20
     },
 
     shared: {

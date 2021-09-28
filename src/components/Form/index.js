@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { 
-    View, 
+import {
+    View,
     Vibration,
-    Text, 
-    TextInput, 
-    TouchableOpacity, 
-    TouchableWithoutFeedback, 
+    Text,
+    TextInput,
+    TouchableOpacity,
+    Pressable,
+    FlatList,
     Keyboard
 } from "react-native";
 import ResultImc from "./ResultImc";
@@ -19,21 +20,22 @@ export default function Form() {
     const [imc, setImc] = useState(null);
     const [textButton, setTextButton] = useState("Calcular IMC");
     const [errorMessage, setErrorMessage] = useState(null);
+    const [imcList, setImcList] = useState([]);
 
     function imcCalculator() {
-        return setImc((Number(weight.replace(",", ".")) / (Number(height.replace(",", ".")) * height.replace(",", "."))).toFixed(2));
+        let totalImc = (Number(weight.replace(",", ".")) / (Number(height.replace(",", ".")) * height.replace(",", "."))).toFixed(2);
+        setImcList((arr) => [...arr, { id: new Date().getTime(), imc: totalImc }]);
+        setImc(totalImc);
     }
 
-    function verificationImc(){
-        if(imc == null){
+    function verificationImc() {
+        if (imc == null) {
             Vibration.vibrate();
             setErrorMessage("Campo obrigatório *");
         }
     }
 
     function validationImc() {
-        verificationImc();
-
         if (weight != null && height != null) {
             imcCalculator();
             setWeight(null);
@@ -41,17 +43,18 @@ export default function Form() {
             setMessageImc("Seu imc é igual:");
             setTextButton("Calcular Novamente");
             setErrorMessage(null);
-            return
+        } else {
+            verificationImc();
+            setImc(null);
+            setTextButton("Calcular");
+            setMessageImc("Preencha o peso e altura");
         }
-        setImc(null);
-        setTextButton("Calcular");
-        setMessageImc("Preencha o peso e altura");
     }
 
     return (
-        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-            <View style={styles.formContext}>
-                <View style={styles.form}>
+        <View style={styles.formContext}>
+            {imc == null ?
+                <Pressable style={styles.form} onPress={() => Keyboard.dismiss()}>
                     <Text style={styles.formLabel}>Altura</Text>
                     <Text style={styles.errorMessage}>{errorMessage}</Text>
                     <TextInput
@@ -71,7 +74,22 @@ export default function Form() {
                         keyboardType="numeric"
                         style={styles.input}
                     />
-                    <TouchableOpacity 
+                    <TouchableOpacity
+                        onPress={() => {
+                            validationImc();
+                            Keyboard.dismiss()
+                        }}
+                        style={styles.buttonCalculator}
+                    >
+                        <Text style={styles.textButtonCalculator}>
+                            {textButton}
+                        </Text>
+                    </TouchableOpacity>
+                </Pressable>
+                :
+                <View style={styles.exhibitionResultImc}>
+                    <ResultImc messageResultImc={messageImc} resultImc={imc} />
+                    <TouchableOpacity
                         onPress={() => {
                             validationImc();
                             Keyboard.dismiss()
@@ -83,9 +101,23 @@ export default function Form() {
                         </Text>
                     </TouchableOpacity>
                 </View>
-
-                <ResultImc messageResultImc={messageImc} resultImc={imc} />
-            </View>
-        </TouchableWithoutFeedback>
+            }
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                style={styles.listImcs}
+                data={imcList.reverse()}
+                renderItem={({ item }) => {
+                    return (
+                        <Text style={styles.resultImcItem}>
+                            <Text style={styles.textResultItemList}>Resultado IMC = </Text>
+                            {item.imc}
+                        </Text>
+                    );
+                }}
+                keyExtractor={(item) => {
+                    item.id
+                }}
+            />
+        </View>
     );
 }
